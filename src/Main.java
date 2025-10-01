@@ -4,6 +4,7 @@
 // import für die Methoden (Liste der Voidnamen)
 import java.lang.reflect.Method;
 // import vom Scanner
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 
@@ -22,14 +23,14 @@ public class Main {
 //                                                 ANSI-Escape Codes                                                 //
 // ----------------------------------------------------------------------------------------------------------------- //
     // Textformatierungen
-    public static String RESET = "\u001B[0m";
+    public static String RESET = "\u001B[0m"; // RESET IMMER hinter jedem anderen ANSI Code, um es wieder zurück zum normalen zu machen
     public static String BOLD = "\u001B[1m";
     public static String ITALIC = "\u001B[3m"; // Italic (und Blau) IMMER vor den Output eines anderen Voids als Main setzen, um es von den Hauptbefehlen abzuheben
     // Textfarben
     public static String BLUE = "\u001B[34m"; // Blau (und Italic) IMMER vor den Output eines anderen Voids als Main setzen, um es von den Hauptbefehlen abzuheben
-    public static String RED = "\u001B[31m";
-    public static String GREEN = "\u001B[32m";
-    public static String YELLOW = "\u001B[33m";
+    public static String RED = "\u001B[31m"; // RED IMMER, wenn ein Fehler aufgetreten ist
+    public static String GREEN = "\u001B[32m"; // GREEN IMMER, wenn etwas gutes passiert ist
+    public static String YELLOW = "\u001B[33m"; // YELLOW IMMER, wenn das Programm einen Tipp oder eine allgemeine Information gibt
 
 
 // ----------------------------------------------------------------------------------------------------------------- //
@@ -48,7 +49,7 @@ public class Main {
             if (input.equalsIgnoreCase("list") || input.equalsIgnoreCase("l")) {
 
                 Method[] funktionen = Main.class.getDeclaredMethods();
-                System.out.println("Liste aller Funktionen aus der Main class:");
+                System.out.println(YELLOW + "Liste aller Funktionen aus der Main class:" + RESET);
                 System.out.println("Anzahl: | Methodenname:");
                 System.out.println("--------|----------------------");
 
@@ -79,7 +80,7 @@ public class Main {
                             gefunden = true;
                             break;
                         } catch (Exception e) {
-                            System.out.println("Fehler beim Ausführen der Methode: " + e.getMessage());
+                            System.out.println(RED + "Fehler beim Ausführen der Methode. Feher: " + e.getMessage() + RESET);
                             gefunden = true;
                             break;
                         }
@@ -88,7 +89,7 @@ public class Main {
 
                 // Wenn die Methode nicht gefunden wurde:
                 if (!gefunden) {
-                    System.out.println("Methode '" + methodName + "' nicht gefunden oder falscher Typ.");
+                    System.out.println(RED + "Methode '" + methodName + "' nicht gefunden oder falscher Typ." + RESET);
                 }
 
             }
@@ -96,7 +97,7 @@ public class Main {
             else if (input.equalsIgnoreCase("stop")) {
 
                 // Programm wird beendet
-                System.out.println("Programm wird beendet...");
+                System.out.println(YELLOW + "Programm wird beendet..." + RESET);
                 running = false; // Hauptschleife stoppen
 
             }
@@ -111,7 +112,7 @@ public class Main {
 
             // Wenn irgendetwas nicht passendes eingegeben wird
             else {
-                System.out.println("Der Befehl " + input + " ist nicht bekannt. Hole dir Hilfe mit: help");
+                System.out.println(RED + "Der Befehl " + input + " ist nicht bekannt. Hole dir Hilfe mit: help" + RESET);
             }
         }
     }
@@ -120,7 +121,7 @@ public class Main {
 // ----------------------------------------------------------------------------------------------------------------- //
 //                                                 Liste aller Voids                                                 //
 // ----------------------------------------------------------------------------------------------------------------- //
-    public static void  zahlenraten() {
+    public static void zahlenraten() {
         Scanner zahlenratenscanner = new Scanner(System.in);
 
         // Variablen, die man für die Zufallszahl braucht
@@ -144,14 +145,48 @@ public class Main {
             }
         } while (input != random);
 
-        System.out.println(ITALIC + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ": Glückwunsch. Du Hast die Zahl " + random + " mit " + versuche + " Versuchen richtig erraten!");
-        System.out.println(ITALIC + "Die Methode " + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ITALIC + " wurde beendet!");
+        System.out.println(ITALIC + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ": " + GREEN + "Glückwunsch. Du Hast die Zahl " + random + " mit " + versuche + " Versuchen richtig erraten!" + RESET);
+        System.out.println(ITALIC + "Die Methode " + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ITALIC + " wurde beendet!" + RESET);
 
     }
-    public static void  test2() {
-        System.out.println("Test2 wurde erfolgreich ausgeführt :)");
-    }
-    public static void  test3() {
-        System.out.println("Test3 wurde erfolgreich ausgeführt :)");
+    public static void rechner() {
+        running = false;
+
+        Scanner rechnerscanner = new Scanner(System.in);
+
+        double ergebnis = 0;
+
+        System.out.println(ITALIC + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ": " + YELLOW + "Gebe deine Rechnung ein: <Zahl> <Befehl> <Zahl>" + RESET);
+        System.out.print(ITALIC + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ": Deine Rechnung: ");
+
+        double a = rechnerscanner.nextDouble(); // Erste Zahl
+        String x = rechnerscanner.next(); // Befehl oder Zeichen (Plus, Minus, Mal, Geteilt)
+        double b = rechnerscanner.nextDouble(); // Zweite Zahl
+
+        switch (x) {
+            case "+":
+            case "plus":
+                ergebnis = a + b;
+                break;
+            case "-":
+            case "minus":
+                ergebnis = a - b;
+                break;
+            case "*":
+            case "mal":
+                ergebnis = a * b;
+                break;
+            case "/":
+            case "durch":
+                if (b != 0) {
+                    ergebnis = a / b;
+                }
+                else {
+                    System.out.println(ITALIC + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ": " + RED + "Durch 0 kann man nicht teilen" + RESET);
+                }
+        }
+        System.out.println(ITALIC + BLUE + Thread.currentThread().getStackTrace()[1].getMethodName() + RESET + ": " + GREEN + a + " " + x + " " + b + " ergibt " + ergebnis + RESET);
+
+        running = true;
     }
 }
